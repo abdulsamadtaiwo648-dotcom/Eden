@@ -1,62 +1,35 @@
-// Your Firebase config
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID"
-};
-firebase.initializeApp(firebaseConfig);
+// App.js
+import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+// Dummy dashboards
+const PersonalDashboard = () => <Text>Personal Dashboard</Text>;
+const BusinessDashboard = () => <Text>Business Dashboard</Text>;
+const RiderDashboard = () => <Text>Rider Dashboard</Text>;
 
-// Update signup phrase dynamically
-function updatePhrase() {
-    const type = document.getElementById('userType').value;
-    const phraseEl = document.getElementById('signupPhrase');
-    if(type==='personal') phraseEl.textContent = "Sign up to request deliveries and track them!";
-    if(type==='business') phraseEl.textContent = "Sign up to manage deliveries and assign riders!";
-    if(type==='rider') phraseEl.textContent = "Sign up to accept delivery jobs and update status!";
-}
-updatePhrase();
+const LoginScreen = ({ setUser }) => (
+  <View>
+    <Text>Login Screen</Text>
+    <Button title="Login as Personal" onPress={() => setUser({role:'personal'})} />
+    <Button title="Login as Business" onPress={() => setUser({role:'business'})} />
+    <Button title="Login as Rider" onPress={() => setUser({role:'rider'})} />
+  </View>
+);
 
-// Sign Up
-function signup(){
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const userType = document.getElementById('userType').value;
+export default function App() {
+  const [user, setUser] = useState(null);
 
-    if(!name || !email || !password) return alert("Please fill all fields");
+  if (!user) return <LoginScreen setUser={setUser} />;
 
-    auth.createUserWithEmailAndPassword(email,password)
-        .then(userCredential=>{
-            const uid = userCredential.user.uid;
-            // Save user info in Firestore
-            db.collection('users').doc(uid).set({
-                name,
-                email,
-                userType
-            }).then(()=>{
-                alert("Signup successful!");
-                // Redirect to dashboard
-                window.location.href = 'dashboard.html?uid='+uid;
-            });
-        })
-        .catch(err=>alert(err.message));
-}
-
-// Login
-function login(){
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    if(!email || !password) return alert("Please fill all fields");
-
-    auth.signInWithEmailAndPassword(email,password)
-        .then(userCredential=>{
-            const uid = userCredential.user.uid;
-            // Redirect to dashboard
-            window.location.href = 'dashboard.html?uid='+uid;
-        })
-        .catch(err=>alert(err.message));
+  // Role-based dashboard rendering
+  switch(user.role) {
+    case "personal":
+      return <PersonalDashboard />;
+    case "business":
+      return <BusinessDashboard />;
+    case "rider":
+      return <RiderDashboard />;
+    default:
+      return <LoginScreen setUser={setUser} />;
+  }
 }
