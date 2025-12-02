@@ -1,35 +1,33 @@
-// App.js
 import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
-
-// Dummy dashboards
-const PersonalDashboard = () => <Text>Personal Dashboard</Text>;
-const BusinessDashboard = () => <Text>Business Dashboard</Text>;
-const RiderDashboard = () => <Text>Rider Dashboard</Text>;
-
-const LoginScreen = ({ setUser }) => (
-  <View>
-    <Text>Login Screen</Text>
-    <Button title="Login as Personal" onPress={() => setUser({role:'personal'})} />
-    <Button title="Login as Business" onPress={() => setUser({role:'business'})} />
-    <Button title="Login as Rider" onPress={() => setUser({role:'rider'})} />
-  </View>
-);
+import { NavigationContainer } from '@react-navigation/native';
+import LoginScreen from './screens/LoginScreen';
+import PersonalTabs from './screens/PersonalTabs';
+import BusinessTabs from './screens/BusinessTabs';
+import RiderTabs from './screens/RiderTabs';
 
 export default function App() {
   const [user, setUser] = useState(null);
 
   if (!user) return <LoginScreen setUser={setUser} />;
 
-  // Role-based dashboard rendering
+  let DashboardTabs;
   switch(user.role) {
     case "personal":
-      return <PersonalDashboard />;
+      DashboardTabs = PersonalTabs;
+      break;
     case "business":
-      return <BusinessDashboard />;
+      DashboardTabs = BusinessTabs;
+      break;
     case "rider":
-      return <RiderDashboard />;
+      DashboardTabs = RiderTabs;
+      break;
     default:
       return <LoginScreen setUser={setUser} />;
   }
+
+  return (
+    <NavigationContainer>
+      <DashboardTabs />
+    </NavigationContainer>
+  );
 }
