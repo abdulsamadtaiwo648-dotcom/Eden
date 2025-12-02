@@ -1,27 +1,12 @@
-# Eden
-# Logistics App (HTML + JavaScript)
+# Eden Delivery App
 
-A simple 3-dashboard logistics app built using plain HTML, CSS, and JavaScript.  
-Dashboards included:
-- **Personal User**
-- **Business User**
-- **Rider**
+A starter React Native app for a delivery service with role-based dashboards for Personal, Business, and Rider users.  
 
-## 🚀 How to run
-1. Clone or download the repo  
-2. Open `index.html` in any browser  
-3. Enter any email to log in  
-   - Contains “business” → Business dashboard  
-   - Contains “rider” → Rider dashboard  
-   - Anything else → Personal dashboard  
-
-## 🛠 Future Features (optional)
-- Shipment creation
-- Real-time tracking
-- QR/Barcode scanning
-- Backend API (Node.js / Firebase)
-- Database integration
-
----
-Made by ChatGPT 😊
-
+## Features
+- Schedule deliveries
+- Bulk delivery (Business)
+- Package snapshots
+- Live chat
+- Billing (Business)
+- Assigned Rider management
+- Rider performance metrics
