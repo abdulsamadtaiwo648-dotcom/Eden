@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logistics App</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 40px; }
+        input { padding: 10px; width: 250px; margin-top: 20px; }
+        button { padding: 10px 20px; margin-top: 20px; }
+        .dashboard { display: none; margin-top: 40px; }
+        ul { list-style: none; padding: 0; }
+        li { padding: 10px; background: #eee; margin: 5px auto; width: 300px; }
+    </style>
+</head>
+<body>
+
+    <h1>Logistics App</h1>
+
+    <div id="login">
+        <input id="email" type="text" placeholder="Enter email"/>
+        <br>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- PERSONAL DASHBOARD -->
+    <div id="personal" class="dashboard">
+        <h2>Personal Dashboard</h2>
+        <ul>
+            <li>Create Shipment</li>
+            <li>Track Shipment</li>
+            <li>Report Issue</li>
+            <li>Chat Support</li>
+            <li>Delivery History</li>
+        </ul>
+    </div>
+
+    <!-- BUSINESS DASHBOARD -->
+    <div id="business" class="dashboard">
+        <h2>Business Dashboard</h2>
+        <ul>
+            <li>Bulk Create Shipments</li>
+            <li>Assign Riders</li>
+            <li>Analytics</li>
+            <li>Manage Staff</li>
+            <li>Billing & Invoices</li>
+        </ul>
+    </div>
+
+    <!-- RIDER DASHBOARD -->
+    <div id="rider" class="dashboard">
+        <h2>Rider Dashboard</h2>
+        <ul>
+            <li>Assigned Deliveries</li>
+            <li>Scan QR / Barcode</li>
+            <li>Navigation</li>
+            <li>Update Delivery Status</li>
+            <li>Earnings</li>
+        </ul>
+    </div>
+
+<script src="app.js"></script>
+</body>
+</html>
