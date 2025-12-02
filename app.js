@@ -1,83 +1,46 @@
-// Firebase config
 const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
     projectId: "YOUR_PROJECT_ID"
 };
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 const auth = firebase.auth();
+const db = firebase.firestore();
 
-// Example: use the logged-in user's UID
-const userId = "CURRENT_USER_UID"; // Replace with auth.currentUser.uid in real login
+function updatePhrase() {
+    const type = document.getElementById('userType').value;
+    const phraseEl = document.getElementById('signupPhrase');
+    if(type==='personal') phraseEl.textContent = "Sign up to request deliveries and track them in real-time!";
+    if(type==='business') phraseEl.textContent = "Sign up to manage your deliveries and assign riders efficiently!";
+    if(type==='rider') phraseEl.textContent = "Sign up to accept delivery jobs and update delivery status on the go!";
+}
+updatePhrase();
 
-let map, customerMarker, riderMarker;
+// Signup
+function signup(){
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const userType = document.getElementById('userType').value;
 
-function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 14,
-        center: { lat: 0, lng: 0 }
-    });
+    auth.createUserWithEmailAndPassword(email,password)
+        .then(userCredential=>{
+            const uid = userCredential.user.uid;
+            db.collection('users').doc(uid).set({name,email,userType})
+                .then(()=> window.location.href = 'dashboard.html?uid='+uid);
+        })
+        .catch(err=>alert(err.message));
 }
 
-function requestDelivery() {
-    if (!navigator.geolocation) return alert('Geolocation not supported');
-    navigator.geolocation.getCurrentPosition(pos => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        db.collection('deliveries').add({
-            customerId: userId,
-            customerAddress: document.getElementById('customerAddress').value,
-            businessName: document.getElementById('businessName').value,
-            status: 'Pending',
-            customerLocation: { lat, lng },
-            riderAssigned: null,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(() => {
-            alert('Delivery Requested!');
-        });
-    });
+// Login
+function login(){
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    auth.signInWithEmailAndPassword(email,password)
+        .then(userCredential=>{
+            const uid = userCredential.user.uid;
+            window.location.href = 'dashboard.html?uid='+uid;
+        })
+        .catch(err=>alert(err.message));
 }
-
-// Load deliveries in real-time
-db.collection('deliveries').where("customerId","==",userId)
-  .orderBy('createdAt','desc')
-  .onSnapshot(snapshot => {
-    const list = document.getElementById('deliveriesList');
-    list.innerHTML = '';
-    snapshot.forEach(doc => {
-        const data = doc.data();
-        const li = document.createElement('li');
-        li.className = `status-${data.status.replace(/\s/g,'')}`;
-        li.textContent = `${data.businessName} - ${data.status} - Rider: ${data.riderAssigned || "Not assigned"}`;
-        list.appendChild(li);
-
-        // Update map markers
-        if(data.customerLocation){
-            if(!customerMarker){
-                customerMarker = new google.maps.Marker({
-                    position: data.customerLocation,
-                    map: map,
-                    label: 'You'
-                });
-                map.setCenter(data.customerLocation);
-            } else {
-                customerMarker.setPosition(data.customerLocation);
-            }
-        }
-        if(data.riderLocation){
-            if(!riderMarker){
-                riderMarker = new google.maps.Marker({
-                    position: data.riderLocation,
-                    map: map,
-                    label: 'Rider',
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-                });
-            } else {
-                riderMarker.setPosition(data.riderLocation);
-            }
-        }
-    });
-});
-
-window.onload = initMap;
